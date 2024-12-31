@@ -6,6 +6,7 @@
 //
 const routes = {
     store: "shopping-list/store",
+    updatePurchaseStatus: "shopping-list/update",
 };
 
 let csrfToken = document
@@ -69,6 +70,14 @@ function addNewItemToList() {
         }
     }
 }
+
+//update purchase status
+document
+    .getElementById("itemList")
+    .addEventListener("change", handleCheckboxEvent);
+document
+    .getElementById("checkedItemsList")
+    .addEventListener("change", handleCheckboxEvent);
 
 //
 //main functionality related to UI ends
@@ -143,6 +152,64 @@ function updateTotalShoppingAmount(itemPrice) {
 }
 
 //
+//addItem support function ends
+//
+//
+//
+//update support function starts
+//
+
+// update purchase status in the database
+function handleCheckboxEvent(event) {
+    if (event.target.classList.contains("form-check-input")) {
+        const checkbox = event.target;
+        const listItem = checkbox.closest("li");
+        const itemName = listItem.querySelector("span").textContent.trim();
+        const isPurchased = checkbox.checked ? 1 : 0;
+
+        sendAjaxRequest(routes.updatePurchaseStatus, "POST", {
+            item_name: itemName,
+            is_purchased: isPurchased,
+        })
+            .then((response) => {
+                if (response.success) {
+                    moveItemInBetweenPurchasedAndUnpurchasedList(
+                        checkbox,
+                        listItem
+                    );
+
+                    //check if any purchased item exist or not add set purchased item header according to that
+                    togglePurchasedItemsHeader();
+                } else {
+                    console.error(
+                        "Error updating purchase status:",
+                        response.message
+                    );
+                }
+            })
+            .catch((error) => {
+                console.error("AJAX request failed:", error);
+            });
+    }
+}
+
+//move item between purchaed and unpachaed list
+function moveItemInBetweenPurchasedAndUnpurchasedList(checkbox, listItem) {
+    const span = listItem.querySelector("span");
+
+    const checkedItemsList = document.getElementById("checkedItemsList");
+    const itemList = document.getElementById("itemList");
+
+    if (checkbox.checked) {
+        span.style.textDecoration = "line-through";
+        checkedItemsList.appendChild(listItem);
+    } else {
+        span.style.textDecoration = "none";
+        itemList.appendChild(listItem);
+    }
+}
+
+//
 //
 //
 //
@@ -208,4 +275,27 @@ function showToast(message, type = "success", delay = 3000) {
         toastElement.classList.remove("show");
         setTimeout(() => toastElement.remove(), 150); // Wait for fade-out animation before removing it
     }, delay);
+}
+
+//check if purchased item exist and set level according to that
+function togglePurchasedItemsHeader() {
+    const checkedItemsList = document.getElementById("checkedItemsList");
+    const checkedItemLabel = document.getElementById("checkedItemLabel");
+
+    // Check if any items are in the checked items list
+    if (checkedItemsList.children.length > 0) {
+        if (!checkedItemLabel) {
+            // Add header dynamically if it doesn't exist
+            const header = document.createElement("h5");
+            header.id = "checkedItemLabel";
+            header.textContent = "Purchased Grocery";
+            const container = document.getElementById("checkedItemsContainer");
+            container.insertBefore(header, checkedItemsList);
+        }
+    } else {
+        // Remove header if no items are in the list
+        if (checkedItemLabel) {
+            checkedItemLabel.remove();
+        }
+    }
 }

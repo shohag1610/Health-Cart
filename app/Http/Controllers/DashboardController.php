@@ -50,4 +50,28 @@ class DashboardController extends Controller
             ]);
         }
     }
+
+    // Update Purchased Status
+    public function updatePurchaseStatus(Request $request)
+    {
+        try {
+            $item = ShoppingList::where('item_name', $request->item_name)
+                ->where('user_id', auth()->id())
+                ->first();
+
+            if ($item) {
+                $item->is_purchased = $request->is_purchased;
+                $item->save();
+            }
+
+            return response()->json(['message' => 'Item added to checked list', 'success' => true]);
+
+        } catch (QueryException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update Purchase Status'
+            ]);
+        }
+    }
+
 }
