@@ -12,7 +12,7 @@
                 <div class="col">
                     <label for="budget" class="form-label budget">
                         Budget: £<span id="budget">{{ Auth::user()->total_budget }}</span>
-                        <a href="javascript:void(0);" onclick=""
+                        <a href="javascript:void(0);" onclick="toggleBudgetUpdateContainer()"
                             class="d-inline-flex align-items-center text-decoration-none cursor-pointer ms-2">
                             <i class="fa-solid fa-money-bill-trend-up"></i>
                             <span class="ms-2">Set Limit</span>
@@ -22,7 +22,7 @@
                 <div class="col" id="updateBudgetContainer" style="display: none">
                     <div class="input-group">
                         <input type="number" id="budgetUpdateAmount" class="form-control" placeholder="£ Price">
-                        <button class="btn btn-add" onclick="">Update</button>
+                        <button class="btn btn-add" onclick="updateShoppingListBudget()">Update</button>
                     </div>
                 </div>
             </div>

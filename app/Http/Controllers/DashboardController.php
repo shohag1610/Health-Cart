@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\ShoppingList;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 class DashboardController extends Controller
@@ -101,6 +103,27 @@ class DashboardController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete the item.'
+            ]);
+        }
+    }
+
+    //Update Budget
+    public function updateBudget(Request $request)
+    {
+        $validated = $request->validate([
+            'budget' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            $user = Auth::user();
+            $user->total_budget = $validated['budget'];
+            $user->save();
+
+            return response()->json(['message' => 'Budget Updated', 'success' => true]);
+        } catch (QueryException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update budget.'
             ]);
         }
     }

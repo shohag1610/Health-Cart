@@ -8,6 +8,7 @@ const routes = {
     store: "shopping-list/store",
     updatePurchaseStatus: "shopping-list/update",
     destroyItem: "/shopping-list/destroy",
+    updateBudget: "shopping-list/update-budget",
 };
 
 let csrfToken = document
@@ -110,6 +111,61 @@ function removeItemFromList(button) {
                 togglePurchasedItemsHeader();
             } else {
                 console.error("Error deleting item:", response.message);
+            }
+        })
+        .catch((error) => {
+            console.error("AJAX request failed:", error);
+        });
+}
+
+// if user want to reset limit then show update UI element
+function toggleBudgetUpdateContainer() {
+    const currentBudget = document.getElementById("budget").innerText;
+
+    document.getElementById("budgetUpdateAmount").value = currentBudget
+        .replace("£", "")
+        .trim();
+
+    const updateBudgetContainer = document.getElementById(
+        "updateBudgetContainer"
+    );
+
+    if (
+        updateBudgetContainer.style.display === "none" ||
+        updateBudgetContainer.style.display === ""
+    ) {
+        updateBudgetContainer.style.display = "block";
+    } else {
+        updateBudgetContainer.style.display = "none";
+    }
+}
+
+//Update limit as a budget in DB and UI
+function updateShoppingListBudget() {
+    const budgetAmount = document
+        .getElementById("budgetUpdateAmount")
+        .value.trim();
+
+    if (
+        budgetAmount === "" ||
+        isNaN(budgetAmount) ||
+        parseFloat(budgetAmount) <= 0
+    ) {
+        alert("Please enter a valid budget amount.");
+        return;
+    }
+
+    sendAjaxRequest(routes.updateBudget, "POST", {
+        budget: budgetAmount,
+    })
+        .then((response) => {
+            if (response.success) {
+                const budgetLabel = document.getElementById("budget");
+                budgetLabel.textContent = parseFloat(budgetAmount).toFixed(2);
+                document.getElementById("updateBudgetContainer").style.display =
+                    "none";
+            } else {
+                console.error("Error updating budget:", response.message);
             }
         })
         .catch((error) => {
