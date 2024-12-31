@@ -7,6 +7,7 @@
 const routes = {
     store: "shopping-list/store",
     updatePurchaseStatus: "shopping-list/update",
+    destroyItem: "/shopping-list/destroy",
 };
 
 let csrfToken = document
@@ -78,6 +79,43 @@ document
 document
     .getElementById("checkedItemsList")
     .addEventListener("change", handleCheckboxEvent);
+
+//Remove Item
+function removeItemFromList(button) {
+    const listItem = button.closest("li");
+
+    const itemName = listItem
+        .querySelector("div:first-child span")
+        .textContent.trim();
+
+    const itemPrice = parseFloat(
+        listItem
+            .querySelector(".item-price")
+            .textContent.replace("£", "")
+            .trim()
+    );
+
+    sendAjaxRequest(routes.destroyItem, "POST", {
+        item_name: itemName,
+    })
+        .then((response) => {
+            if (response.success) {
+                const budgetLabel = document.getElementById("budget");
+
+                //if item is checked and removed then reduce total budget and set it to the UI
+                budgetLabel.textContent = response.new_budget;
+
+                decreaseTotalAmount(itemPrice);
+                listItem.remove();
+                togglePurchasedItemsHeader();
+            } else {
+                console.error("Error deleting item:", response.message);
+            }
+        })
+        .catch((error) => {
+            console.error("AJAX request failed:", error);
+        });
+}
 
 //
 //main functionality related to UI ends
@@ -207,6 +245,22 @@ function moveItemInBetweenPurchasedAndUnpurchasedList(checkbox, listItem) {
         span.style.textDecoration = "none";
         itemList.appendChild(listItem);
     }
+}
+
+//
+//update support function ends
+//
+//
+//
+//remove support function starts
+//
+
+//Deduct amonunt when an item will be deleted
+function decreaseTotalAmount(amount) {
+    const totalElement = document.getElementById("total");
+    let total = parseFloat(totalElement.textContent.replace("£", ""));
+    total -= amount;
+    totalElement.textContent = total.toFixed(2);
 }
 
 //

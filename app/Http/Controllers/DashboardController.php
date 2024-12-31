@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\ShoppingList;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 
 class DashboardController extends Controller
@@ -70,6 +71,36 @@ class DashboardController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update Purchase Status'
+            ]);
+        }
+    }
+
+    // Delete Item
+    public function destroyItem(Request $request)
+    {
+        try {
+            $itemName = $request->input('item_name');
+            $userId = auth()->id();
+
+            $item = ShoppingList::where('item_name', $itemName)->where('user_id', $userId)->first();
+
+            if (!$item) {
+                return response()->json(['success' => false, 'message' => 'Item not found'], 404);
+            }
+
+            $itemPrice = $item->item_price;
+            $user = User::find($userId);
+            if ($item->is_purchased) {
+                $user->total_budget -= $itemPrice;
+                $user->save();
+            }
+
+            $item->delete();
+            return response()->json(['message' => 'Item Deleted', 'success' => true, 'new_budget' => $user->total_budget]);
+        } catch (QueryException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete the item.'
             ]);
         }
     }

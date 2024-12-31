@@ -49,7 +49,8 @@
                                     </div>
                                     <div>
                                         £<span class="item-price">{{ $shoppingListItem->item_price }}</span>
-                                        <button class="btn btn-sm btn-danger ms-2" onclick="">×</button>
+                                        <button class="btn btn-sm btn-danger ms-2"
+                                            onclick="removeItemFromList(this)">×</button>
                                     </div>
                                 </li>
                             @endif
@@ -63,24 +64,25 @@
                 @if ($shoppingList && $shoppingList->where('is_purchased', true)->isNotEmpty())
                     <h5 id="checkedItemLabel">Purchased Grocery</h5>
                 @endif
-                <ul class="list-group mb-3" id="checkedItemsList" ">
-
-
-                                                            @if ($shoppingList)
-                    @foreach ($shoppingList as $shoppingListItem)
-                        @if ($shoppingListItem->is_purchased)
-                            <li class="list-group-item d-flex justify-content-between align-items-center" draggable="true">
-                                <div>
-                                    <input type="checkbox" class="form-check-input me-2" checked>
-                                    <span style="text-decoration: line-through;">{{ $shoppingListItem->item_name }}</span>
-                                </div>
-                                <div>
-                                    £<span class="item-price">{{ $shoppingListItem->item_price }}</span>
-                                    <button class="btn btn-sm btn-danger ms-2" onclick="">×</button>
-                                </div>
-                            </li>
-                        @endif
-                    @endforeach
+                <ul class="list-group mb-3" id="checkedItemsList">
+                    @if ($shoppingList)
+                        @foreach ($shoppingList as $shoppingListItem)
+                            @if ($shoppingListItem->is_purchased)
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    draggable="true">
+                                    <div>
+                                        <input type="checkbox" class="form-check-input me-2" checked>
+                                        <span
+                                            style="text-decoration: line-through;">{{ $shoppingListItem->item_name }}</span>
+                                    </div>
+                                    <div>
+                                        £<span class="item-price">{{ $shoppingListItem->item_price }}</span>
+                                        <button class="btn btn-sm btn-danger ms-2"
+                                            onclick="removeItemFromList(this)">×</button>
+                                    </div>
+                                </li>
+                            @endif
+                        @endforeach
                     @endif
                 </ul>
             </div>
