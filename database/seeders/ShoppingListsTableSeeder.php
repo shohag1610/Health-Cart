@@ -10,7 +10,7 @@ class ShoppingListsTableSeeder extends Seeder
 {
     public function run()
     {
-        $user = User::where('email', 's@gmail.com')->first();
+        $user = User::where('email', 'r@gmail.com')->first();
 
         if ($user) {
             ShoppingList::insert([
