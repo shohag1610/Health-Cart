@@ -9,6 +9,7 @@ const routes = {
     updatePurchaseStatus: "shopping-list/update",
     destroyItem: "/shopping-list/destroy",
     updateBudget: "shopping-list/update-budget",
+    sendShoppingListByEmail: "shopping-list/send-by-email",
 };
 
 let csrfToken = document
@@ -243,6 +244,46 @@ function updateTotalShoppingAmount(itemPrice) {
     let total = parseFloat(totalElement.textContent.replace("£", "")) || 0;
     total += itemPrice;
     totalElement.textContent = total.toFixed(2);
+}
+
+//show email UI element if wanted to send email
+function toggleEmailSendContainer() {
+    const sendEmailContainer = document.getElementById("sendEmailContainer");
+
+    if (
+        sendEmailContainer.style.display === "none" ||
+        sendEmailContainer.style.display === ""
+    ) {
+        sendEmailContainer.style.display = "block";
+    } else {
+        sendEmailContainer.style.display = "none";
+    }
+}
+
+//Send Email to given email
+function sendShoppingListEmail() {
+    const emailAddress = getFieldValueById("emailAddress");
+
+    sendAjaxRequest(routes.sendShoppingListByEmail, "POST", {
+        emailAddress: emailAddress,
+    })
+        .then((response) => {
+            if (response.success) {
+                document.getElementById("updateBudgetContainer").style.display =
+                    "none";
+                showToast(response.message, "success");
+            } else {
+                console.error("Error sending shopping list:", response.message);
+                showToast(response.message, "danger"); // Provide error feedback
+            }
+        })
+        .catch((error) => {
+            console.error("AJAX request failed:", error);
+            showToast(
+                "An error occurred while sending the shopping list.",
+                "danger"
+            ); // Provide error feedback
+        });
 }
 
 //

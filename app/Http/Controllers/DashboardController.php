@@ -7,6 +7,8 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\ShoppingListMail;
+use Illuminate\Support\Facades\Mail;
 
 
 class DashboardController extends Controller
@@ -124,6 +126,32 @@ class DashboardController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update budget.'
+            ]);
+        }
+    }
+
+    //Email Shopping List
+    public function sendShoppingListByEmail(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $emailAddress = $request->input('emailAddress');
+            $uncheckedItems = ShoppingList::where('user_id', $user->id)
+                ->where('is_purchased', false)
+                ->get();
+
+            $checkedItems = ShoppingList::where('user_id', $user->id)
+                ->where('is_purchased', true)
+                ->get();
+
+            Mail::to($emailAddress)
+                ->send(new ShoppingListMail($uncheckedItems, $checkedItems, $user));
+
+            return response()->json(['success' => true, 'message' => 'Shopping list sent to your partner!']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send shopping list via email. '
             ]);
         }
     }

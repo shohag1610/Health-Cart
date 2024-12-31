@@ -98,13 +98,13 @@
                 <div class="col">
                     <label class="form-label budget">
                         Share:
-                        <i class="fa-solid fa-envelope" style="cursor: pointer;" onclick=""></i>
+                        <i class="fa-solid fa-envelope" style="cursor: pointer;" onclick="toggleEmailSendContainer()"></i>
                     </label>
                 </div>
                 <div class="col-lg-8" id="sendEmailContainer" style="display: none">
                     <div class="input-group">
                         <input type="email" id="emailAddress" class="form-control" placeholder="example@gmail.com">
-                        <button class="btn btn-add" onclick="">Send</button>
+                        <button class="btn btn-add" onclick="sendShoppingListEmail()">Send</button>
                     </div>
                 </div>
             </div>
