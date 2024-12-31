@@ -31,28 +31,29 @@
             <div class="input-group mb-3">
                 <input type="text" id="itemName" class="form-control" placeholder="Enter item name">
                 <input type="number" id="itemPrice" class="form-control" placeholder="£ Price">
-                <button class="btn btn-add" onclick="">Add</button>
+                <button class="btn btn-add" onclick="addNewItemToList()">Add</button>
             </div>
 
             {{-- Unpurchased item container --}}
             <div class="uncheckedItemContainer">
-                <ul class="list-group mb-3" id="itemList" ">
-                                                    <!-- Existing item (example) -->
-                                                            @if ($shoppingList)
-                    @foreach ($shoppingList as $shoppingListItem)
-                        @if (!$shoppingListItem->is_purchased)
-                            <li class="list-group-item d-flex justify-content-between align-items-center" draggable="true">
-                                <div>
-                                    <input type="checkbox" class="form-check-input me-2">
-                                    <span>{{ $shoppingListItem->item_name }}</span>
-                                </div>
-                                <div>
-                                    £<span class="item-price">{{ $shoppingListItem->item_price }}</span>
-                                    <button class="btn btn-sm btn-danger ms-2" onclick="">×</button>
-                                </div>
-                            </li>
-                        @endif
-                    @endforeach
+                <ul class="list-group mb-3" id="itemList">
+                    <!-- Existing item (example) -->
+                    @if ($shoppingList)
+                        @foreach ($shoppingList as $shoppingListItem)
+                            @if (!$shoppingListItem->is_purchased)
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    draggable="true">
+                                    <div>
+                                        <input type="checkbox" class="form-check-input me-2">
+                                        <span>{{ $shoppingListItem->item_name }}</span>
+                                    </div>
+                                    <div>
+                                        £<span class="item-price">{{ $shoppingListItem->item_price }}</span>
+                                        <button class="btn btn-sm btn-danger ms-2" onclick="">×</button>
+                                    </div>
+                                </li>
+                            @endif
+                        @endforeach
                     @endif
                 </ul>
             </div>
@@ -63,6 +64,8 @@
                     <h5 id="checkedItemLabel">Purchased Grocery</h5>
                 @endif
                 <ul class="list-group mb-3" id="checkedItemsList" ">
+
+
                                                             @if ($shoppingList)
                     @foreach ($shoppingList as $shoppingListItem)
                         @if ($shoppingListItem->is_purchased)
@@ -105,6 +108,11 @@
             </div>
 
         </div>
+    </div>
+
+    <!-- Toast Container (it will hold the toasts) -->
+    <div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+        <!-- Toast will be dynamically added here -->
     </div>
 
 @endsection

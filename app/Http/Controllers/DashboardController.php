@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\ShoppingList;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 
 
 class DashboardController extends Controller
@@ -21,6 +22,31 @@ class DashboardController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve shopping list.'
+            ]);
+        }
+    }
+
+    // Add Item to Shopping List
+    public function storeItem(Request $request)
+    {
+
+        $request->validate([
+            'item_name' => 'required|string',
+            'item_price' => 'required|numeric',
+        ]);
+
+        try {
+            $shoppingList = new ShoppingList();
+            $shoppingList->user_id = auth()->id();
+            $shoppingList->item_name = $request->item_name;
+            $shoppingList->item_price = $request->item_price;
+            $shoppingList->save();
+
+            return response()->json(['message' => 'Item added', 'success' => true]);
+        } catch (QueryException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item Already Exist.'
             ]);
         }
     }

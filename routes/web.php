@@ -26,5 +26,6 @@ Route::middleware('auth')->group(function () {
 
     //dashboard related routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('shopping-list/store', [DashboardController::class, 'storeItem'])->name('shopping-list.store');
 
 });
