@@ -16,7 +16,7 @@
     {{-- app header --}}
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#">Grocery Shoping List</a>
+            <a class="navbar-brand" href="#">Grocery Items List</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
                     @guest
