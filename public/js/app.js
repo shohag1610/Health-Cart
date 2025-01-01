@@ -10,6 +10,7 @@ const routes = {
     destroyItem: "/shopping-list/destroy",
     updateBudget: "shopping-list/update-budget",
     sendShoppingListByEmail: "shopping-list/send-by-email",
+    updateItemPosition: "shopping-list/store-item-updated-position",
 };
 
 let csrfToken = document
@@ -361,6 +362,66 @@ function decreaseTotalAmount(amount) {
 }
 
 //
+//remove support function ends
+//
+//
+//
+// Drag-and-drop functionality stars
+//
+
+let draggedItem = null;
+
+// Start drag event
+document.getElementById("itemList").addEventListener("dragstart", function (e) {
+    if (e.target.tagName === "LI") {
+        draggedItem = e.target;
+        setTimeout(() => (draggedItem.style.display = "none"), 0);
+    }
+});
+
+// End drag event
+document.getElementById("itemList").addEventListener("dragend", function () {
+    setTimeout(() => (draggedItem.style.display = "flex"), 0);
+    draggedItem = null;
+    saveUpdatedItemPosition(); // Update the order on the backend
+});
+
+// Allow item to be dropped
+document.getElementById("itemList").addEventListener("dragover", function (e) {
+    e.preventDefault();
+    let target = e.target.closest("li");
+    if (target && target !== draggedItem) {
+        let rect = target.getBoundingClientRect();
+        let next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+        target.parentNode.insertBefore(
+            draggedItem,
+            (next && target.nextSibling) || target
+        );
+    }
+});
+
+// Update items order into DB
+function saveUpdatedItemPosition() {
+    let items = Array.from(document.getElementById("itemList").children);
+    let orderData = items.map((item, index) => ({
+        item_name: item.querySelector("span").textContent.trim(),
+        order: index + 1,
+    }));
+
+    fetch(routes.updateItemPosition, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken,
+        },
+        body: JSON.stringify({
+            order: orderData,
+        }),
+    })
+        .then(handleApiResponse)
+        .catch(handleApiError);
+}
+//
 //
 //
 //
@@ -450,3 +511,6 @@ function togglePurchasedItemsHeader() {
         }
     }
 }
+
+//initialize drag and drop event to all list
+initializeDragAndDropForItems();

@@ -36,7 +36,7 @@
 
             {{-- Unpurchased item container --}}
             <div class="uncheckedItemContainer">
-                <ul class="list-group mb-3" id="itemList">
+                <ul class="list-group mb-3" id="itemList" ondrop="drop(event)" ondragover="allowDrop(event)">
                     <!-- Existing item (example) -->
                     @if ($shoppingList)
                         @foreach ($shoppingList as $shoppingListItem)
@@ -64,7 +64,7 @@
                 @if ($shoppingList && $shoppingList->where('is_purchased', true)->isNotEmpty())
                     <h5 id="checkedItemLabel">Purchased Grocery</h5>
                 @endif
-                <ul class="list-group mb-3" id="checkedItemsList">
+                <ul class="list-group mb-3" id="checkedItemsList" ondrop="drop(event)" ondragover="allowDrop(true)">
                     @if ($shoppingList)
                         @foreach ($shoppingList as $shoppingListItem)
                             @if ($shoppingListItem->is_purchased)
@@ -90,7 +90,8 @@
             {{-- Total amount container --}}
             <div class="d-flex justify-content-between total">
                 <span>Total:</span>
-                <span>£<span id="total">{{ number_format($shoppingList->sum('item_price'), 2) }}</span></span>
+                <span class="me-5">£<span
+                        id="total">{{ number_format($shoppingList->sum('item_price'), 2) }}</span></span>
             </div>
 
             {{-- Send email container --}}
@@ -98,7 +99,11 @@
                 <div class="col">
                     <label class="form-label budget">
                         Share:
-                        <i class="fa-solid fa-envelope" style="cursor: pointer;" onclick="toggleEmailSendContainer()"></i>
+                        <a href="javascript:void(0);" onclick="toggleEmailSendContainer()"
+                            class="text-decoration-none cursor-pointer ms-2">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span class="ms-2">Send Mail</span>
+                        </a>
                     </label>
                 </div>
                 <div class="col-lg-8" id="sendEmailContainer" style="display: none">

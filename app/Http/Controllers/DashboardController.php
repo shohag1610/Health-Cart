@@ -156,4 +156,25 @@ class DashboardController extends Controller
         }
     }
 
+    // Update Order Position
+    public function saveUpdatedItemPosition(Request $request)
+    {
+        try {
+            foreach ($request->order as $orderItem) {
+                $item = ShoppingList::where('item_name', $orderItem['item_name'])
+                    ->where('user_id', auth()->id())
+                    ->first();
+                if ($item) {
+                    $item->order = $orderItem['order'];
+                    $item->save();
+                }
+            }
+            return response()->json(['success' => true]);
+        } catch (QueryException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update item order.'
+            ]);
+        }
+    }
 }

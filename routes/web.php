@@ -31,5 +31,6 @@ Route::middleware('auth')->group(function () {
     Route::post('shopping-list/destroy', [DashboardController::class, 'destroyItem'])->name('shopping-list.destroy');
     Route::post('shopping-list/update-budget', [DashboardController::class, 'updateBudget'])->name('shopping-list.update-budget');
     Route::post('shopping-list/send-by-email', [DashboardController::class, 'sendShoppingListByEmail'])->name('shopping-list.send-by-email');
+    Route::post('shopping-list/store-item-updated-position', [DashboardController::class, 'saveUpdatedItemPosition'])->name('shopping-list.store-item-updated-position');
 
 });
