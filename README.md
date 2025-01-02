@@ -66,7 +66,11 @@ MAIL_FROM_NAME="${APP_NAME}"
 Replace your_database_name, your_username, and your_password with your MySQL credentials.
 Replace your_mailtrap_username and your_mailtrap_password with your Mailtrap credentials.
 
-### Step 4: Run Database Migrations
+### Step 4: Start Your MySQL server
+
+You can use: XAMPP and MAMP are great for easy local MySQL management.
+
+### Step 5: Run Database Migrations
 
 Set up the database structure by running:
 
@@ -74,7 +78,7 @@ Set up the database structure by running:
 php artisan migrate
 ```
 
-### Step 5: Seed the Database
+### Step 6: Seed the Database
 
 Seed the database with default user and items:
 
@@ -87,7 +91,7 @@ Default Credentials:
 -   Email: r@gmail.com
 -   Password: 12345678
 
-### Step 6: Start the Application
+### Step 7: Start the Application
 
 Open your browser and navigate to:
 
