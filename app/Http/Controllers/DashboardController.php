@@ -41,9 +41,21 @@ class DashboardController extends Controller
         ]);
 
         try {
+            $itemName = $request->input('item_name');
+            $userId = auth()->id();
+
+            $item = ShoppingList::where('item_name', $itemName)->where('user_id', $userId)->first();
+
+            if ($item) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Item Already Exist.'
+                ]);
+            }
+
             $shoppingList = new ShoppingList();
-            $shoppingList->user_id = auth()->id();
-            $shoppingList->item_name = $request->item_name;
+            $shoppingList->user_id = $userId;
+            $shoppingList->item_name = $itemName;
             $shoppingList->item_price = $request->item_price;
             $shoppingList->save();
 
@@ -51,7 +63,7 @@ class DashboardController extends Controller
         } catch (QueryException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Item Already Exist.'
+                'message' => 'Fail to add item into DB'
             ]);
         }
     }

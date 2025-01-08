@@ -16,7 +16,7 @@ class CreateShoppingListsTable extends Migration
         Schema::create('shopping_lists', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->string('item_name')->unique();
+            $table->string('item_name');
             $table->decimal('item_price', 10, 2);
             $table->boolean('is_purchased')->default(false);
             $table->integer('order')->default(0);
